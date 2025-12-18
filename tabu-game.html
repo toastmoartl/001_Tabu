@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>TABU - Wolpertingers vs Boars</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Retro Billboard Scoreboard */
+        .scoreboard {
+            background: linear-gradient(180deg, #2d1810 0%, #1a0f08 100%);
+            border: 8px solid #8b4513;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 2px 10px rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .scoreboard::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            background: linear-gradient(45deg, #d4a574, #8b6f47);
+            border-radius: 18px;
+            z-index: -1;
+        }
+
+        .scoreboard-title {
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+            letter-spacing: 3px;
+            margin-bottom: 15px;
+            font-family: 'Impact', 'Arial Black', sans-serif;
+        }
+
+        .teams-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 15px;
+        }
+
+        .team-section {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .team-section:hover {
+            transform: scale(1.05);
+        }
+
+        .team-section.active {
+            border-color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .team-section.wolpertingers {
+            border-top: 4px solid #10b981;
+        }
+
+        .team-section.boars {
+            border-top: 4px solid #ef4444;
+        }
+
+        .team-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .team-section.wolpertingers .team-name {
+            color: #10b981;
+        }
+
+        .team-section.boars .team-name {
+            color: #ef4444;
+        }
+
+        .team-score {
+            font-size: 3.5em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8), 0 0 10px rgba(255, 215, 0, 0.5);
+            font-family: 'Impact', 'Arial Black', sans-serif;
+            line-height: 1;
+        }
+
+        /* Timer Section */
+        .timer-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .timer-display {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            margin-bottom: 15px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer-display.warning {
+            color: #ef4444;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .timer-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            text-transform: uppercase;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 1.2em;
+            min-width: 50px;
+        }
+
+        .timer-adjust {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .timer-adjust span {
+            font-size: 1.2em;
+            min-width: 80px;
+        }
+
+        /* Card Section */
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 20px 0;
+            min-height: 300px;
+        }
+
+        .card {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            border: 5px solid #8b4513;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, #d4a574, #c19a6b);
+            border-radius: 22px;
+            z-index: -1;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card.highlight-red {
+            animation: flashRed 0.5s;
+        }
+
+        .card.highlight-green {
+            animation: flashGreen 0.5s;
+        }
+
+        @keyframes flashRed {
+            0%, 100% { background: linear-gradient(145deg, #ffffff, #f0f0f0); }
+            50% { background: linear-gradient(145deg, #ff6b6b, #ee5a6f); transform: scale(1.05); }
+        }
+
+        @keyframes flashGreen {
+            0%, 100% { background: linear-gradient(145deg, #ffffff, #f0f0f0); }
+            50% { background: linear-gradient(145deg, #51cf66, #37b24d); transform: scale(1.05); }
+        }
+
+        .card-word {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #1e3c72;
+            text-align: center;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .card-divider {
+            height: 4px;
+            background: linear-gradient(90deg, transparent, #8b4513, transparent);
+            margin-bottom: 20px;
+        }
+
+        .forbidden-words {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .forbidden-word {
+            font-size: 1.3em;
+            color: #dc2626;
+            text-align: center;
+            font-weight: bold;
+            padding: 8px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #dc2626;
+        }
+
+        .game-message {
+            text-align: center;
+            font-size: 1.5em;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .game-over h2 {
+            font-size: 2.5em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+        }
+
+        .game-over p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .scoreboard-title {
+                font-size: 1.4em;
+                letter-spacing: 1px;
+            }
+
+            .team-name {
+                font-size: 1.1em;
+            }
+
+            .team-score {
+                font-size: 2.5em;
+            }
+
+            .timer-display {
+                font-size: 2.5em;
+            }
+
+            .card-word {
+                font-size: 2em;
+            }
+
+            .forbidden-word {
+                font-size: 1.1em;
+            }
+
+            .btn {
+                padding: 10px 18px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .teams-container {
+                flex-direction: column;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .card-word {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scoreboard -->
+    <div class="scoreboard">
+        <div class="scoreboard-title">⚔️ TABU ARENA ⚔️</div>
+        <div class="teams-container">
+            <div class="team-section wolpertingers" id="team-wolpertingers" onclick="startGame('wolpertingers')">
+                <div class="team-name">🦌 Wolpertingers</div>
+                <div class="team-score" id="score-wolpertingers">0</div>
+            </div>
+            <div class="team-section boars" id="team-boars" onclick="startGame('boars')">
+                <div class="team-name">🐗 Boars</div>
+                <div class="team-score" id="score-boars">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timer Section -->
+    <div class="timer-section">
+        <div class="timer-display" id="timer-display">1:30</div>
+        <div class="timer-adjust">
+            <button class="btn btn-secondary btn-small" onclick="adjustTime(-10)">-10s</button>
+            <span id="timer-setting">90s</span>
+            <button class="btn btn-secondary btn-small" onclick="adjustTime(10)">+10s</button>
+        </div>
+        <div class="timer-controls">
+            <button class="btn btn-primary" id="pause-btn" onclick="togglePause()" style="display: none;">Pause</button>
+        </div>
+    </div>
+
+    <!-- Card Container -->
+    <div class="card-container" id="card-container">
+        <div class="game-message">
+            👆 Tippe auf ein Team um zu starten!
+        </div>
+    </div>
+
+    <script>
+        // Game Data - 20 Minecraft Questions
+        const questions = [
+            {
+                word2beguessed: "Creeper",
+                wordsnotallowed: ["Explosion", "Grün", "Zischen", "TNT", "Monster"]
+            },
+            {
+                word2beguessed: "Enderman",
+                wordsnotallowed: ["Teleport", "Lila", "Augen", "End", "Schwarz"]
+            },
+            {
+                word2beguessed: "Diamond",
+                wordsnotallowed: ["Blau", "Wertvoll", "Spitzhacke", "Erz", "Selten"]
+            },
+            {
+                word2beguessed: "Crafting Table",
+                wordsnotallowed: ["Werkbank", "Holz", "Rezept", "Herstellen", "3x3"]
+            },
+            {
+                word2beguessed: "Nether",
+                wordsnotallowed: ["Portal", "Hölle", "Rot", "Lava", "Piglin"]
+            },
+            {
+                word2beguessed: "Redstone",
+                wordsnotallowed: ["Rot", "Strom", "Kabel", "Signal", "Schaltung"]
+            },
+            {
+                word2beguessed: "Enchanting",
+                wordsnotallowed: ["Verzauberung", "Buch", "Lapislazuli", "Level", "Tisch"]
+            },
+            {
+                word2beguessed: "Zombie",
+                wordsnotallowed: ["Grün", "Untot", "Nacht", "Monster", "Gehirn"]
+            },
+            {
+                word2beguessed: "Steve",
+                wordsnotallowed: ["Spieler", "Charakter", "Bart", "Blau", "Standard"]
+            },
+            {
+                word2beguessed: "Ender Dragon",
+                wordsnotallowed: ["Boss", "End", "Kristall", "Fliegen", "Ei"]
+            },
+            {
+                word2beguessed: "Pickaxe",
+                wordsnotallowed: ["Spitzhacke", "Erz", "Abbauen", "Stein", "Werkzeug"]
+            },
+            {
+                word2beguessed: "Village",
+                wordsnotallowed: ["Dorf", "Villager", "Händler", "Häuser", "Bewohner"]
+            },
+            {
+                word2beguessed: "Obsidian",
+                wordsnotallowed: ["Schwarz", "Lava", "Wasser", "Portal", "Hart"]
+            },
+            {
+                word2beguessed: "Sword",
+                wordsnotallowed: ["Schwert", "Waffe", "Kämpfen", "Schaden", "Klinge"]
+            },
+            {
+                word2beguessed: "Furnace",
+                wordsnotallowed: ["Ofen", "Schmelzen", "Kohle", "Brennen", "Kochen"]
+            },
+            {
+                word2beguessed: "Minecart",
+                wordsnotallowed: ["Lore", "Schienen", "Fahren", "Transport", "Wagen"]
+            },
+            {
+                word2beguessed: "Chest",
+                wordsnotallowed: ["Truhe", "Lagern", "Items", "Aufbewahren", "Holzkiste"]
+            },
+            {
+                word2beguessed: "Skeleton",
+                wordsnotallowed: ["Bogen", "Knochen", "Pfeil", "Untot", "Weiß"]
+            },
+            {
+                word2beguessed: "TNT",
+                wordsnotallowed: ["Explosion", "Dynamit", "Boom", "Feuer", "Zerstören"]
+            },
+            {
+                word2beguessed: "Bed",
+                wordsnotallowed: ["Bett", "Schlafen", "Nacht", "Spawn", "Wolle"]
+            }
+        ];
+
+        // Game State
+        let gameState = {
+            wolpertingersScore: 0,
+            boarsScore: 0,
+            activeTeam: null,
+            timerSeconds: 90,
+            defaultTimer: 90,
+            currentTime: 90,
+            timerInterval: null,
+            isPaused: false,
+            isGameActive: false,
+            currentCardIndex: 0,
+            usedCards: [],
+            availableCards: []
+        };
+
+        // Initialize available cards
+        function initializeCards() {
+            gameState.availableCards = [...Array(questions.length).keys()];
+            shuffleArray(gameState.availableCards);
+            gameState.currentCardIndex = 0;
+        }
+
+        // Shuffle array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Adjust timer setting
+        function adjustTime(seconds) {
+            if (gameState.isGameActive) return;
+            
+            gameState.defaultTimer += seconds;
+            if (gameState.defaultTimer < 10) gameState.defaultTimer = 10;
+            if (gameState.defaultTimer > 300) gameState.defaultTimer = 300;
+            
+            gameState.timerSeconds = gameState.defaultTimer;
+            gameState.currentTime = gameState.defaultTimer;
+            updateTimerDisplay();
+            document.getElementById('timer-setting').textContent = gameState.defaultTimer + 's';
+        }
+
+        // Start game with selected team
+        function startGame(team) {
+            if (gameState.isGameActive) return;
+            
+            gameState.activeTeam = team;
+            gameState.isGameActive = true;
+            gameState.currentTime = gameState.timerSeconds;
+            
+            // Initialize cards
+            initializeCards();
+            
+            // Update UI
+            document.getElementById('team-' + team).classList.add('active');
+            document.getElementById('pause-btn').style.display = 'inline-block';
+            
+            // Remove click handlers from team sections during game
+            document.getElementById('team-wolpertingers').style.pointerEvents = 'none';
+            document.getElementById('team-boars').style.pointerEvents = 'none';
+            
+            // Show first card
+            showCard();
+            
+            // Start timer
+            startTimer();
+        }
+
+        // Show current card
+        function showCard() {
+            if (gameState.currentCardIndex >= gameState.availableCards.length) {
+                endGame();
+                return;
+            }
+            
+            const questionIndex = gameState.availableCards[gameState.currentCardIndex];
+            const question = questions[questionIndex];
+            
+            const cardHTML = `
+                <div class="card" id="game-card">
+                    <div class="card-word">${question.word2beguessed}</div>
+                    <div class="card-divider"></div>
+                    <div class="forbidden-words">
+                        ${question.wordsnotallowed.map(word => `<div class="forbidden-word">${word}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('card-container').innerHTML = cardHTML;
+            
+            // Add click handlers
+            const card = document.getElementById('game-card');
+            let clickTimeout = null;
+            
+            card.addEventListener('click', function(e) {
+                if (clickTimeout !== null) {
+                    // Double click
+                    clearTimeout(clickTimeout);
+                    clickTimeout = null;
+                    handleDoubleClick();
+                } else {
+                    // Wait to see if it's a double click
+                    clickTimeout = setTimeout(() => {
+                        handleSingleClick();
+                        clickTimeout = null;
+                    }, 300);
+                }
+            });
+        }
+
+        // Single click - opponent scores
+        function handleSingleClick() {
+            const card = document.getElementById('game-card');
+            card.classList.add('highlight-red');
+            
+            // Award point to non-active team
+            if (gameState.activeTeam === 'wolpertingers') {
+                gameState.boarsScore++;
+                document.getElementById('score-boars').textContent = gameState.boarsScore;
+            } else {
+                gameState.wolpertingersScore++;
+                document.getElementById('score-wolpertingers').textContent = gameState.wolpertingersScore;
+            }
+            
+            setTimeout(() => {
+                card.classList.remove('highlight-red');
+                nextCard();
+            }, 500);
+        }
+
+        // Double click - active team scores
+        function handleDoubleClick() {
+            const card = document.getElementById('game-card');
+            card.classList.add('highlight-green');
+            
+            // Award point to active team
+            if (gameState.activeTeam === 'wolpertingers') {
+                gameState.wolpertingersScore++;
+                document.getElementById('score-wolpertingers').textContent = gameState.wolpertingersScore;
+            } else {
+                gameState.boarsScore++;
+                document.getElementById('score-boars').textContent = gameState.boarsScore;
+            }
+            
+            setTimeout(() => {
+                card.classList.remove('highlight-green');
+                nextCard();
+            }, 500);
+        }
+
+        // Next card
+        function nextCard() {
+            if (!gameState.isGameActive || gameState.currentTime <= 0) return;
+            
+            gameState.currentCardIndex++;
+            
+            if (gameState.currentCardIndex >= gameState.availableCards.length) {
+                endGame();
+            } else {
+                showCard();
+            }
+        }
+
+        // Timer functions
+        function startTimer() {
+            if (gameState.timerInterval) clearInterval(gameState.timerInterval);
+            
+            gameState.timerInterval = setInterval(() => {
+                if (!gameState.isPaused) {
+                    gameState.currentTime--;
+                    updateTimerDisplay();
+                    
+                    if (gameState.currentTime <= 10) {
+                        document.getElementById('timer-display').classList.add('warning');
+                    }
+                    
+                    if (gameState.currentTime <= 0) {
+                        timerEnd();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(gameState.currentTime / 60);
+            const seconds = gameState.currentTime % 60;
+            document.getElementById('timer-display').textContent = 
+                `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function togglePause() {
+            if (!gameState.isGameActive) return;
+            
+            gameState.isPaused = !gameState.isPaused;
+            document.getElementById('pause-btn').textContent = gameState.isPaused ? 'Resume' : 'Pause';
+            document.getElementById('pause-btn').className = gameState.isPaused ? 'btn btn-primary' : 'btn btn-danger';
+        }
+
+        function timerEnd() {
+            clearInterval(gameState.timerInterval);
+            gameState.isGameActive = false;
+            
+            // Play alarm sound
+            playAlarmSound();
+            
+            // Switch teams or end game
+            document.getElementById('timer-display').classList.remove('warning');
+            document.getElementById('pause-btn').style.display = 'none';
+            
+            // Re-enable team selection
+            document.getElementById('team-wolpertingers').style.pointerEvents = 'auto';
+            document.getElementById('team-boars').style.pointerEvents = 'auto';
+            
+            // Remove active class
+            document.getElementById('team-wolpertingers').classList.remove('active');
+            document.getElementById('team-boars').classList.remove('active');
+            
+            // Check if game is over
+            if (gameState.currentCardIndex >= gameState.availableCards.length) {
+                endGame();
+            } else {
+                document.getElementById('card-container').innerHTML = `
+                    <div class="game-message">
+                        ⏰ Zeit abgelaufen!<br>
+                        👆 Tippe auf ein Team für die nächste Runde!
+                    </div>
+                `;
+            }
+        }
+
+        // Web Audio API - Fire Alarm Sound
+        function playAlarmSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const duration = 2; // 2 seconds
+            const startTime = audioContext.currentTime;
+            
+            // Create oscillator for siren effect
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Siren effect - alternating frequencies
+            oscillator.frequency.setValueAtTime(800, startTime);
+            for (let i = 0; i < 8; i++) {
+                const time = startTime + (i * 0.25);
+                oscillator.frequency.setValueAtTime(i % 2 === 0 ? 800 : 600, time);
+            }
+            
+            // Volume envelope
+            gainNode.gain.setValueAtTime(0.3, startTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + duration);
+            
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+        }
+
+        // End game
+        function endGame() {
+            clearInterval(gameState.timerInterval);
+            gameState.isGameActive = false;
+            
+            document.getElementById('timer-display').classList.remove('warning');
+            document.getElementById('pause-btn').style.display = 'none';
+            
+            // Re-enable team selection
+            document.getElementById('team-wolpertingers').style.pointerEvents = 'auto';
+            document.getElementById('team-boars').style.pointerEvents = 'auto';
+            
+            // Remove active class
+            document.getElementById('team-wolpertingers').classList.remove('active');
+            document.getElementById('team-boars').classList.remove('active');
+            
+            // Determine winner
+            let winnerText = '';
+            if (gameState.wolpertingersScore > gameState.boarsScore) {
+                winnerText = '🦌 Wolpertingers gewinnen! 🏆';
+            } else if (gameState.boarsScore > gameState.wolpertingersScore) {
+                winnerText = '🐗 Boars gewinnen! 🏆';
+            } else {
+                winnerText = '🤝 Unentschieden!';
+            }
+            
+            document.getElementById('card-container').innerHTML = `
+                <div class="game-over">
+                    <h2>🎮 SPIEL BEENDET! 🎮</h2>
+                    <p>${winnerText}</p>
+                    <p>Alle Karten wurden gespielt!</p>
+                    <button class="btn btn-primary" onclick="resetGame()">Neues Spiel</button>
+                </div>
+            `;
+        }
+
+        // Reset game
+        function resetGame() {
+            gameState = {
+                wolpertingersScore: 0,
+                boarsScore: 0,
+                activeTeam: null,
+                timerSeconds: gameState.defaultTimer,
+                defaultTimer: gameState.defaultTimer,
+                currentTime: gameState.defaultTimer,
+                timerInterval: null,
+                isPaused: false,
+                isGameActive: false,
+                currentCardIndex: 0,
+                usedCards: [],
+                availableCards: []
+            };
+            
+            document.getElementById('score-wolpertingers').textContent = '0';
+            document.getElementById('score-boars').textContent = '0';
+            updateTimerDisplay();
+            
+            document.getElementById('card-container').innerHTML = `
+                <div class="game-message">
+                    👆 Tippe auf ein Team um zu starten!
+                </div>
+            `;
+        }
+
+        // Initialize on load
+        updateTimerDisplay();
+    </script>
+</body>
+</html>
