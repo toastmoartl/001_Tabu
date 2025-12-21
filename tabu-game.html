@@ -171,6 +171,16 @@
             box-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
         }
 
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn:disabled:active {
+            transform: none;
+        }
+
         .btn-primary {
             background: linear-gradient(135deg, #10b981, #059669);
             color: white;
@@ -183,6 +193,11 @@
 
         .btn-secondary {
             background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             color: white;
         }
 
@@ -250,6 +265,7 @@
 
         .card.highlight-green {
             animation: flashGreen 0.5s;
+            border: 5px solid #10b981 !important;
         }
 
         @keyframes flashRed {
@@ -259,7 +275,7 @@
 
         @keyframes flashGreen {
             0%, 100% { background: linear-gradient(145deg, #ffffff, #f0f0f0); }
-            50% { background: linear-gradient(145deg, #51cf66, #37b24d); transform: scale(1.05); }
+            50% { background: linear-gradient(145deg, #10b981, #059669); transform: scale(1.05); }
         }
 
         .card-word {
@@ -387,12 +403,13 @@
     <div class="timer-section">
         <div class="timer-display" id="timer-display">1:30</div>
         <div class="timer-adjust">
-            <button class="btn btn-secondary btn-small" onclick="adjustTime(-10)">-10s</button>
+            <button class="btn btn-secondary btn-small" id="btn-decrease" onclick="adjustTime(-10)">-10s</button>
             <span id="timer-setting">90s</span>
-            <button class="btn btn-secondary btn-small" onclick="adjustTime(10)">+10s</button>
+            <button class="btn btn-secondary btn-small" id="btn-increase" onclick="adjustTime(10)">+10s</button>
         </div>
         <div class="timer-controls">
             <button class="btn btn-primary" id="pause-btn" onclick="togglePause()" style="display: none;">Pause</button>
+            <button class="btn btn-warning" id="reset-btn" onclick="resetGame()" style="display: none;">Reset</button>
         </div>
     </div>
 
@@ -501,7 +518,9 @@
             isGameActive: false,
             currentCardIndex: 0,
             usedCards: [],
-            availableCards: []
+            availableCards: [],
+            lastClickTime: 0,
+            isProcessingClick: false
         };
 
         // Initialize available cards
@@ -547,6 +566,11 @@
             // Update UI
             document.getElementById('team-' + team).classList.add('active');
             document.getElementById('pause-btn').style.display = 'inline-block';
+            document.getElementById('reset-btn').style.display = 'inline-block';
+            
+            // Disable timer adjustment buttons during game
+            document.getElementById('btn-decrease').disabled = true;
+            document.getElementById('btn-increase').disabled = true;
             
             // Remove click handlers from team sections during game
             document.getElementById('team-wolpertingers').style.pointerEvents = 'none';
@@ -583,26 +607,42 @@
             
             // Add click handlers
             const card = document.getElementById('game-card');
+            
+            let clickCount = 0;
             let clickTimeout = null;
             
             card.addEventListener('click', function(e) {
-                if (clickTimeout !== null) {
-                    // Double click
-                    clearTimeout(clickTimeout);
-                    clickTimeout = null;
-                    handleDoubleClick();
-                } else {
-                    // Wait to see if it's a double click
+                clickCount++;
+                
+                if (clickCount === 1) {
+                    // Erster Klick - warte auf möglichen zweiten Klick
                     clickTimeout = setTimeout(() => {
+                        // Nur ein Klick kam - Einzelklick (rot)
                         handleSingleClick();
-                        clickTimeout = null;
-                    }, 300);
+                        clickCount = 0;
+                    }, 500); // 500ms Zeit für zweiten Klick
+                } else if (clickCount === 2) {
+                    // Zweiter Klick kam - Doppelklick (grün)
+                    clearTimeout(clickTimeout);
+                    handleDoubleClick();
+                    clickCount = 0;
                 }
             });
         }
 
         // Single click - opponent scores
         function handleSingleClick() {
+            const now = Date.now();
+            const CLICK_COOLDOWN = 1200; // 600ms cooldown
+            
+            // Verhindere schnelle aufeinanderfolgende Klicks
+            if (gameState.isProcessingClick || (now - gameState.lastClickTime < CLICK_COOLDOWN)) {
+                return;
+            }
+            
+            gameState.isProcessingClick = true;
+            gameState.lastClickTime = now;
+            
             const card = document.getElementById('game-card');
             card.classList.add('highlight-red');
             
@@ -618,11 +658,23 @@
             setTimeout(() => {
                 card.classList.remove('highlight-red');
                 nextCard();
+                gameState.isProcessingClick = false;
             }, 500);
         }
 
         // Double click - active team scores
         function handleDoubleClick() {
+            const now = Date.now();
+            const CLICK_COOLDOWN = 600; // 600ms cooldown
+            
+            // Verhindere schnelle aufeinanderfolgende Klicks
+            if (gameState.isProcessingClick || (now - gameState.lastClickTime < CLICK_COOLDOWN)) {
+                return;
+            }
+            
+            gameState.isProcessingClick = true;
+            gameState.lastClickTime = now;
+            
             const card = document.getElementById('game-card');
             card.classList.add('highlight-green');
             
@@ -638,6 +690,7 @@
             setTimeout(() => {
                 card.classList.remove('highlight-green');
                 nextCard();
+                gameState.isProcessingClick = false;
             }, 500);
         }
 
@@ -699,6 +752,11 @@
             // Switch teams or end game
             document.getElementById('timer-display').classList.remove('warning');
             document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('reset-btn').style.display = 'none';
+            
+            // Re-enable timer adjustment buttons
+            document.getElementById('btn-decrease').disabled = false;
+            document.getElementById('btn-increase').disabled = false;
             
             // Re-enable team selection
             document.getElementById('team-wolpertingers').style.pointerEvents = 'auto';
@@ -755,8 +813,11 @@
             gameState.isGameActive = false;
             
             document.getElementById('timer-display').classList.remove('warning');
-            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('pause-btn').style.display = 'none';            document.getElementById('reset-btn').style.display = 'none';
             
+            // Re-enable timer adjustment buttons
+            document.getElementById('btn-decrease').disabled = false;
+            document.getElementById('btn-increase').disabled = false;            
             // Re-enable team selection
             document.getElementById('team-wolpertingers').style.pointerEvents = 'auto';
             document.getElementById('team-boars').style.pointerEvents = 'auto';
@@ -787,6 +848,11 @@
 
         // Reset game
         function resetGame() {
+            // Stop any active timer
+            if (gameState.timerInterval) {
+                clearInterval(gameState.timerInterval);
+            }
+            
             gameState = {
                 wolpertingersScore: 0,
                 boarsScore: 0,
@@ -805,6 +871,19 @@
             document.getElementById('score-wolpertingers').textContent = '0';
             document.getElementById('score-boars').textContent = '0';
             updateTimerDisplay();
+            
+            // Hide game buttons and re-enable timer adjustment
+            document.getElementById('pause-btn').style.display = 'none';
+            document.getElementById('reset-btn').style.display = 'none';
+            document.getElementById('btn-decrease').disabled = false;
+            document.getElementById('btn-increase').disabled = false;
+            document.getElementById('timer-display').classList.remove('warning');
+            
+            // Re-enable team selection
+            document.getElementById('team-wolpertingers').style.pointerEvents = 'auto';
+            document.getElementById('team-boars').style.pointerEvents = 'auto';
+            document.getElementById('team-wolpertingers').classList.remove('active');
+            document.getElementById('team-boars').classList.remove('active');
             
             document.getElementById('card-container').innerHTML = `
                 <div class="game-message">
