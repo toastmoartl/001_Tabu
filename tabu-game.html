@@ -505,6 +505,9 @@
             }
         ];
 
+        // LocalStorage key
+        const STORAGE_KEY = 'tabu_asked_questions';
+
         // Game State
         let gameState = {
             wolpertingersScore: 0,
@@ -520,14 +523,118 @@
             usedCards: [],
             availableCards: [],
             lastClickTime: 0,
-            isProcessingClick: false
+            isProcessingClick: false,
+            askedQuestions: [] // Track questions asked in current session
         };
+
+        // LocalStorage functions
+        function getAskedQuestionsFromStorage() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                return stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                console.error('Error reading from localStorage:', e);
+                return [];
+            }
+        }
+
+        function saveAskedQuestionToStorage(questionIndex) {
+            try {
+                const asked = getAskedQuestionsFromStorage();
+                if (!asked.includes(questionIndex)) {
+                    asked.push(questionIndex);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(asked));
+                }
+            } catch (e) {
+                console.error('Error saving to localStorage:', e);
+            }
+        }
+
+        function clearAskedQuestionsStorage() {
+            try {
+                localStorage.removeItem(STORAGE_KEY);
+            } catch (e) {
+                console.error('Error clearing localStorage:', e);
+            }
+        }
+
+        function getAvailableQuestionCount() {
+            const askedFromStorage = getAskedQuestionsFromStorage();
+            return questions.length - askedFromStorage.length;
+        }
 
         // Initialize available cards
         function initializeCards() {
-            gameState.availableCards = [...Array(questions.length).keys()];
+            const askedFromStorage = getAskedQuestionsFromStorage();
+            
+            // Filter out already asked questions
+            gameState.availableCards = [];
+            for (let i = 0; i < questions.length; i++) {
+                if (!askedFromStorage.includes(i)) {
+                    gameState.availableCards.push(i);
+                }
+            }
+            
+            // If all questions have been asked, offer to reset
+            if (gameState.availableCards.length === 0) {
+                showResetQuestionsPrompt();
+                return false;
+            }
+            
             shuffleArray(gameState.availableCards);
             gameState.currentCardIndex = 0;
+            return true;
+        }
+
+        // Show prompt to reset questions
+        function showResetQuestionsPrompt() {
+            document.getElementById('card-container').innerHTML = `
+                <div class="game-over">
+                    <h2>🎯 Alle Fragen gespielt!</h2>
+                    <p>Es sind keine neuen Fragen mehr verfügbar.</p>
+                    <p>Möchtest du den Fragenpool zurücksetzen?</p>
+                    <button class="btn btn-primary" onclick="resetQuestionPool()">Fragenpool zurücksetzen</button>
+                </div>
+            `;
+        }
+
+        // Reset question pool
+        function resetQuestionPool() {
+            if (confirm('Wirklich alle gespielten Fragen zurücksetzen?')) {
+                clearAskedQuestionsStorage();
+                updateAvailableQuestionsDisplay();
+                document.getElementById('card-container').innerHTML = `
+                    <div class="game-message">
+                        ✅ Fragenpool zurückgesetzt!<br>
+                        👆 Tippe auf ein Team um zu starten!
+                    </div>
+                `;
+            }
+        }
+
+        // Update display of available questions
+        function updateAvailableQuestionsDisplay() {
+            const availableCount = getAvailableQuestionCount();
+            const totalCount = questions.length;
+            
+            // Add or update the display in timer section
+            let displayElement = document.getElementById('questions-available');
+            if (!displayElement) {
+                displayElement = document.createElement('div');
+                displayElement.id = 'questions-available';
+                displayElement.style.marginTop = '10px';
+                displayElement.style.fontSize = '1em';
+                displayElement.style.color = '#ffd700';
+                document.querySelector('.timer-section').appendChild(displayElement);
+            }
+            
+            displayElement.textContent = `📝 Verfügbare Fragen: ${availableCount}/${totalCount}`;
+            
+            if (availableCount < totalCount * 0.3) {
+                displayElement.style.color = '#ef4444';
+            } else {
+                displayElement.style.color = '#ffd700';
+            }
         }
 
         // Shuffle array
@@ -560,8 +667,10 @@
             gameState.isGameActive = true;
             gameState.currentTime = gameState.timerSeconds;
             
-            // Initialize cards
-            initializeCards();
+            // Initialize cards - check if there are available questions
+            if (!initializeCards()) {
+                return; // No questions available
+            }
             
             // Update UI
             document.getElementById('team-' + team).classList.add('active');
@@ -592,6 +701,13 @@
             
             const questionIndex = gameState.availableCards[gameState.currentCardIndex];
             const question = questions[questionIndex];
+            
+            // Save this question as asked
+            if (!gameState.askedQuestions.includes(questionIndex)) {
+                saveAskedQuestionToStorage(questionIndex);
+                gameState.askedQuestions.push(questionIndex);
+                updateAvailableQuestionsDisplay();
+            }
             
             const cardHTML = `
                 <div class="card" id="game-card">
@@ -865,7 +981,10 @@
                 isGameActive: false,
                 currentCardIndex: 0,
                 usedCards: [],
-                availableCards: []
+                availableCards: [],
+                lastClickTime: 0,
+                isProcessingClick: false,
+                askedQuestions: []
             };
             
             document.getElementById('score-wolpertingers').textContent = '0';
@@ -894,6 +1013,7 @@
 
         // Initialize on load
         updateTimerDisplay();
+        updateAvailableQuestionsDisplay();
     </script>
 </body>
 </html>
