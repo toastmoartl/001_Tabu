@@ -423,7 +423,7 @@
     <script>
         // Game Data - 20 Minecraft Questions
         const questions = [
-            {
+                        {
                 word2beguessed: "Creeper",
                 wordsnotallowed: ["Explosion", "Grün", "Zischen", "TNT", "Monster"]
             },
@@ -502,6 +502,566 @@
             {
                 word2beguessed: "Bed",
                 wordsnotallowed: ["Bett", "Schlafen", "Nacht", "Spawn", "Wolle"]
+            },
+            {
+                word2beguessed: "Minecraft",
+                wordsnotallowed: ["Spiel", "Blöcke", "Creeper", "bauen", "Pixel"]
+            },
+            {
+                word2beguessed: "Creeper",
+                wordsnotallowed: ["Explosion", "Grün", "Minecraft", "Monster", "schleichen"]
+            },
+            {
+                word2beguessed: "Redstone",
+                wordsnotallowed: ["Strom", "Minecraft", "Schaltung", "Technik", "Kabel"]
+            },
+            {
+                word2beguessed: "Server",
+                wordsnotallowed: ["Internet", "online", "Computer", "verbinden", "spielen"]
+            },
+            {
+                word2beguessed: "Drohne",
+                wordsnotallowed: ["fliegen", "Kamera", "fernsteuern", "Propeller", "Luft"]
+            },
+            {
+                word2beguessed: "Joystick",
+                wordsnotallowed: ["steuern", "Controller", "Spiel", "Knüppel", "Hand"]
+            },
+            {
+                word2beguessed: "Virtual Reality",
+                wordsnotallowed: ["Brille", "digital", "Spielwelt", "3D", "VR"]
+            },
+            {
+                word2beguessed: "Roboter",
+                wordsnotallowed: ["Maschine", "programmieren", "Technik", "automatisch", "Metall"]
+            },
+            {
+                word2beguessed: "Künstliche Intelligenz",
+                wordsnotallowed: ["Computer", "lernen", "Algorithmus", "denken", "KI"]
+            },
+            {
+                word2beguessed: "Programmieren",
+                wordsnotallowed: ["Code", "Computer", "Software", "schreiben", "Informatik"]
+            },
+            {
+                word2beguessed: "Fussball",
+                wordsnotallowed: ["Ball", "Tor", "Spieler", "WM", "Mannschaft"]
+            },
+            {
+                word2beguessed: "Torwart",
+                wordsnotallowed: ["Handschuhe", "Tor", "Fussball", "halten", "Keeper"]
+            },
+            {
+                word2beguessed: "Elfmeter",
+                wordsnotallowed: ["Strafstoss", "Tor", "Fussball", "Punkt", "schiessen"]
+            },
+            {
+                word2beguessed: "Schiedsrichter",
+                wordsnotallowed: ["Pfeife", "Regel", "Karte", "Fussball", "entscheiden"]
+            },
+            {
+                word2beguessed: "Abseits",
+                wordsnotallowed: ["Regel", "Fussball", "Linie", "Position", "verboten"]
+            },
+            {
+                word2beguessed: "Umweltschutz",
+                wordsnotallowed: ["Natur", "Klima", "schützen", "nachhaltig", "Erde"]
+            },
+            {
+                word2beguessed: "Recycling",
+                wordsnotallowed: ["Müll", "wiederverwenden", "trennen", "Plastik", "Papier"]
+            },
+            {
+                word2beguessed: "Solarenergie",
+                wordsnotallowed: ["Sonne", "Strom", "erneuerbar", "Panel", "Energie"]
+            },
+            {
+                word2beguessed: "Windkraft",
+                wordsnotallowed: ["Windrad", "Strom", "Energie", "erneuerbar", "drehen"]
+            },
+            {
+                word2beguessed: "Klimawandel",
+                wordsnotallowed: ["Erde", "Temperatur", "CO2", "Erwärmung", "Umwelt"]
+            },
+            {
+                word2beguessed: "Norwegen",
+                wordsnotallowed: ["Fjorde", "Norden", "Urlaub", "Skandinavien", "Natur"]
+            },
+            {
+                word2beguessed: "Grossbritannien",
+                wordsnotallowed: ["Insel", "England", "London", "Königreich", "UK"]
+            },
+            {
+                word2beguessed: "London",
+                wordsnotallowed: ["Hauptstadt", "England", "Big Ben", "Themse", "Stadt"]
+            },
+            {
+                word2beguessed: "Fähre",
+                wordsnotallowed: ["Schiff", "Überfahrt", "Auto", "Meer", "Reise"]
+            },
+            {
+                word2beguessed: "Zelt",
+                wordsnotallowed: ["Camping", "schlafen", "draussen", "Stoff", "Urlaub"]
+            },
+            {
+                word2beguessed: "Laptop",
+                wordsnotallowed: ["Computer", "tragbar", "Bildschirm", "Tastatur", "Arbeit"]
+            },
+            {
+                word2beguessed: "Tastatur",
+                wordsnotallowed: ["tippen", "Buchstaben", "Computer", "schreiben", "Tasten"]
+            },
+            {
+                word2beguessed: "Maus",
+                wordsnotallowed: ["klicken", "Computer", "Zeiger", "USB", "scrollen"]
+            },
+            {
+                word2beguessed: "Internet",
+                wordsnotallowed: ["online", "WLAN", "Webseiten", "Verbindung", "Netzwerk"]
+            },
+            {
+                word2beguessed: "Passwort",
+                wordsnotallowed: ["Sicherheit", "geheim", "Login", "schützen", "Zugang"]
+            },
+            {
+                word2beguessed: "App",
+                wordsnotallowed: ["Handy", "Anwendung", "downloaden", "Smartphone", "Programm"]
+            },
+            {
+                word2beguessed: "Update",
+                wordsnotallowed: ["neu", "Software", "aktualisieren", "Version", "laden"]
+            },
+            {
+                word2beguessed: "Cloud",
+                wordsnotallowed: ["Internet", "speichern", "online", "Server", "Daten"]
+            },
+            {
+                word2beguessed: "Brettspiel",
+                wordsnotallowed: ["spielen", "Tisch", "Karten", "Familie", "Würfel"]
+            },
+            {
+                word2beguessed: "Würfel",
+                wordsnotallowed: ["Zahl", "Spiel", "rollen", "Punkte", "Glück"]
+            },
+            {
+                word2beguessed: "Tabu",
+                wordsnotallowed: ["erklären", "verboten", "Spiel", "Wörter", "raten"]
+            },
+            {
+                word2beguessed: "Natur",
+                wordsnotallowed: ["draussen", "Umwelt", "Wald", "Tiere", "Pflanzen"]
+            },
+            {
+                word2beguessed: "Wald",
+                wordsnotallowed: ["Bäume", "Natur", "Spaziergang", "grün", "Tiere"]
+            },
+            {
+                word2beguessed: "Rakete",
+                wordsnotallowed: ["Weltraum", "fliegen", "Start", "NASA", "schnell"]
+            },
+            {
+                word2beguessed: "Planet",
+                wordsnotallowed: ["Erde", "Weltraum", "rund", "Sonne", "kreisen"]
+            },
+            {
+                word2beguessed: "Creeper",
+                wordsnotallowed: ["Explosion", "Grün", "Zischen", "TNT", "Monster"]
+            },
+            {
+                word2beguessed: "Enderman",
+                wordsnotallowed: ["Teleport", "Lila", "Augen", "End", "Schwarz"]
+            },
+            {
+                word2beguessed: "Redstone",
+                wordsnotallowed: ["Strom", "Signal", "Schaltung", "Kabel", "Mechanik"]
+            },
+            {
+                word2beguessed: "Crafting",
+                wordsnotallowed: ["Herstellen", "Werkbank", "Rezept", "bauen", "Items"]
+            },
+            {
+                word2beguessed: "Biome",
+                wordsnotallowed: ["Landschaft", "Klima", "Region", "Minecraft", "Natur"]
+            },
+            {
+                word2beguessed: "Drohne",
+                wordsnotallowed: ["fliegen", "Propeller", "Fernsteuerung", "Kamera", "Quadrokopter"]
+            },
+            {
+                word2beguessed: "Gyroskop",
+                wordsnotallowed: ["Drehung", "Stabilisierung", "Sensor", "Bewegung", "Lage"]
+            },
+            {
+                word2beguessed: "GPS",
+                wordsnotallowed: ["Satellit", "Position", "Ortung", "Navigation", "Koordinaten"]
+            },
+            {
+                word2beguessed: "Akkulaufzeit",
+                wordsnotallowed: ["Batterie", "laden", "Energie", "Strom", "Zeit"]
+            },
+            {
+                word2beguessed: "Funkverbindung",
+                wordsnotallowed: ["Signal", "Daten", "drahtlos", "Übertragung", "Reichweite"]
+            },
+            {
+                word2beguessed: "Abseits",
+                wordsnotallowed: ["Regel", "Linie", "Position", "Fussball", "verboten"]
+            },
+            {
+                word2beguessed: "Pressing",
+                wordsnotallowed: ["Druck", "Gegner", "hoch", "Taktik", "Balleroberung"]
+            },
+            {
+                word2beguessed: "Konter",
+                wordsnotallowed: ["schnell", "Gegenangriff", "Umschalten", "Tor", "Tempo"]
+            },
+            {
+                word2beguessed: "Fairplay",
+                wordsnotallowed: ["Respekt", "Regeln", "ehrlich", "Sport", "Verhalten"]
+            },
+            {
+                word2beguessed: "Nachspielzeit",
+                wordsnotallowed: ["Verlängerung", "Uhr", "Schiedsrichter", "Minute", "Ende"]
+            },
+            {
+                word2beguessed: "Klimawandel",
+                wordsnotallowed: ["Erwärmung", "CO2", "Temperatur", "Umwelt", "global"]
+            },
+            {
+                word2beguessed: "Nachhaltigkeit",
+                wordsnotallowed: ["Zukunft", "Ressourcen", "Umwelt", "Verbrauch", "schonen"]
+            },
+            {
+                word2beguessed: "Mikroplastik",
+                wordsnotallowed: ["Teilchen", "Meer", "unsichtbar", "Kunststoff", "Umwelt"]
+            },
+            {
+                word2beguessed: "Energiewende",
+                wordsnotallowed: ["erneuerbar", "Strom", "Politik", "Umbau", "Versorgung"]
+            },
+            {
+                word2beguessed: "Biodiversität",
+                wordsnotallowed: ["Arten", "Vielfalt", "Natur", "Ökosystem", "Lebewesen"]
+            },
+            {
+                word2beguessed: "Norwegen",
+                wordsnotallowed: ["Fjorde", "Skandinavien", "Norden", "Oslo", "Natur"]
+            },
+            {
+                word2beguessed: "Grossbritannien",
+                wordsnotallowed: ["Insel", "Vereinigtes", "Königreich", "England", "UK"]
+            },
+            {
+                word2beguessed: "Linksverkehr",
+                wordsnotallowed: ["Strasse", "fahren", "Grossbritannien", "Auto", "Seite"]
+            },
+            {
+                word2beguessed: "Fjord",
+                wordsnotallowed: ["Meer", "Berg", "Norwegen", "lang", "Wasser"]
+            },
+            {
+                word2beguessed: "Wanderroute",
+                wordsnotallowed: ["Pfad", "Karte", "Planung", "Strecke", "Natur"]
+            },
+            {
+                word2beguessed: "Algorithmus",
+                wordsnotallowed: ["Schritte", "Problem", "Computer", "Logik", "Reihenfolge"]
+            },
+            {
+                word2beguessed: "Datenbank",
+                wordsnotallowed: ["Speicher", "Abfrage", "Tabelle", "Information", "Server"]
+            },
+            {
+                word2beguessed: "Verschlüsselung",
+                wordsnotallowed: ["Sicherheit", "Daten", "geheim", "Code", "Schutz"]
+            },
+            {
+                word2beguessed: "Open Source",
+                wordsnotallowed: ["Quellcode", "frei", "Software", "öffentlich", "Community"]
+            },
+            {
+                word2beguessed: "Bug",
+                wordsnotallowed: ["Fehler", "Software", "Problem", "Absturz", "Programm"]
+            },
+            {
+                word2beguessed: "Cloud",
+                wordsnotallowed: ["Server", "Internet", "Speicher", "online", "Daten"]
+            },
+            {
+                word2beguessed: "Backup",
+                wordsnotallowed: ["Sicherung", "Daten", "Kopie", "Wiederherstellung", "Speicher"]
+            },
+            {
+                word2beguessed: "Update",
+                wordsnotallowed: ["Version", "neu", "Software", "aktualisieren", "Patch"]
+            },
+            {
+                word2beguessed: "Firewall",
+                wordsnotallowed: ["Schutz", "Netzwerk", "Sicherheit", "Zugriff", "Blockieren"]
+            },
+            {
+                word2beguessed: "Browser",
+                wordsnotallowed: ["Internet", "Webseite", "Programm", "surfen", "Tabs"]
+            },
+            {
+                word2beguessed: "Rakete",
+                wordsnotallowed: ["Start", "Weltraum", "Antrieb", "NASA", "Orbit"]
+            },
+            {
+                word2beguessed: "Orbit",
+                wordsnotallowed: ["Umlaufbahn", "Planet", "Kreis", "Weltraum", "Gravitation"]
+            },
+            {
+                word2beguessed: "Mars",
+                wordsnotallowed: ["Planet", "rot", "Rover", "Weltraum", "Erde"]
+            },
+            {
+                word2beguessed: "ISS",
+                wordsnotallowed: ["Raumstation", "Orbit", "Astronauten", "Weltraum", "international"]
+            },
+            {
+                word2beguessed: "Teleskop",
+                wordsnotallowed: ["beobachten", "Sterne", "vergrössern", "Himmel", "Linsen"]
+            },
+            {
+                word2beguessed: "Teamwork",
+                wordsnotallowed: ["zusammen", "Gruppe", "Kooperation", "Ziel", "gemeinsam"]
+            },
+            {
+                word2beguessed: "Strategie",
+                wordsnotallowed: ["Plan", "Vorgehen", "Ziel", "Taktik", "langfristig"]
+            },
+            {
+                word2beguessed: "Konzentration",
+                wordsnotallowed: ["Fokus", "Aufmerksamkeit", "denken", "Ablenkung", "ruhig"]
+            },
+            {
+                word2beguessed: "Kompromiss",
+                wordsnotallowed: ["Mitte", "nachgeben", "Lösung", "beide", "Einigung"]
+            },
+            {
+                word2beguessed: "Verantwortung",
+                wordsnotallowed: ["Pflicht", "übernehmen", "Folgen", "Entscheidung", "Vertrauen"]
+            },
+            {
+                word2beguessed: "Apfelsaft",
+                wordsnotallowed: ["Apfel", "trinken", "Getränk", "Saft", "Obst"]
+            },
+            {
+                word2beguessed: "Schulranzen",
+                wordsnotallowed: ["Tasche", "Schule", "Bücher", "tragen", "Rücken"]
+            },
+            {
+                word2beguessed: "Zahnbürste",
+                wordsnotallowed: ["Zähne", "putzen", "Bad", "Mund", "Bürste"]
+            },
+            {
+                word2beguessed: "Pausenbrot",
+                wordsnotallowed: ["essen", "Schule", "Snack", "Dose", "Hunger"]
+            },
+            {
+                word2beguessed: "Regenbogen",
+                wordsnotallowed: ["Farben", "Himmel", "Regen", "Bogen", "Sonne"]
+            },
+            {
+                word2beguessed: "Schwimmbad",
+                wordsnotallowed: ["Wasser", "baden", "Becken", "Sommer", "schwimmen"]
+            },
+            {
+                word2beguessed: "Handtuch",
+                wordsnotallowed: ["trocken", "Bad", "duschen", "Stoff", "abwischen"]
+            },
+            {
+                word2beguessed: "Sonnencreme",
+                wordsnotallowed: ["Sonne", "schützen", "Haut", "Urlaub", "eincremen"]
+            },
+            {
+                word2beguessed: "Eiswürfel",
+                wordsnotallowed: ["kalt", "Getränk", "Gefrierfach", "Wasser", "würfelig"]
+            },
+            {
+                word2beguessed: "Strohhalm",
+                wordsnotallowed: ["trinken", "Becher", "saugen", "Getränk", "Plastik"]
+            },
+            {
+                word2beguessed: "Kuscheltier",
+                wordsnotallowed: ["plüschig", "schlafen", "Stoff", "Tier", "Umarmen"]
+            },
+            {
+                word2beguessed: "Bilderbuch",
+                wordsnotallowed: ["lesen", "Kinder", "Seiten", "Geschichte", "Illustration"]
+            },
+            {
+                word2beguessed: "Malkasten",
+                wordsnotallowed: ["Farben", "malen", "Pinsel", "Kunst", "Wasser"]
+            },
+            {
+                word2beguessed: "Buntstift",
+                wordsnotallowed: ["malen", "Farbe", "zeichnen", "Papier", "Stift"]
+            },
+            {
+                word2beguessed: "Radiergummi",
+                wordsnotallowed: ["wegradieren", "Fehler", "Stift", "Gummi", "Papier"]
+            },
+            {
+                word2beguessed: "Hausschuhe",
+                wordsnotallowed: ["drinnen", "Füsse", "warm", "anziehen", "Wohnung"]
+            },
+            {
+                word2beguessed: "Sofakissen",
+                wordsnotallowed: ["Couch", "weich", "Wohnzimmer", "lehnen", "Stoff"]
+            },
+            {
+                word2beguessed: "Deckenlampe",
+                wordsnotallowed: ["Licht", "Zimmer", "oben", "an", "hell"]
+            },
+            {
+                word2beguessed: "Türklinke",
+                wordsnotallowed: ["Tür", "öffnen", "anfassen", "Metall", "drücken"]
+            },
+            {
+                word2beguessed: "Fensterbank",
+                wordsnotallowed: ["Fenster", "Blumen", "ablagen", "drinnen", "Rand"]
+            },
+            {
+                word2beguessed: "Spielplatz",
+                wordsnotallowed: ["draussen", "Kinder", "rutschen", "schaukeln", "Sand"]
+            },
+            {
+                word2beguessed: "Schaukel",
+                wordsnotallowed: ["hin und her", "Spielplatz", "sitzen", "Seil", "fliegen"]
+            },
+            {
+                word2beguessed: "Rutsche",
+                wordsnotallowed: ["runter", "Spielplatz", "glatt", "Spaß", "klettern"]
+            },
+            {
+                word2beguessed: "Sandkasten",
+                wordsnotallowed: ["Sand", "buddeln", "Spielplatz", "Eimer", "förmchen"]
+            },
+            {
+                word2beguessed: "Drachensteigen",
+                wordsnotallowed: ["Wind", "Himmel", "Schnur", "fliegen", "Herbst"]
+            },
+            {
+                word2beguessed: "Frühling",
+                wordsnotallowed: ["Jahreszeit", "Blumen", "warm", "nach Winter", "Natur"]
+            },
+            {
+                word2beguessed: "Sommerferien",
+                wordsnotallowed: ["frei", "Schule", "Urlaub", "lang", "Sonne"]
+            },
+            {
+                word2beguessed: "Herbstlaub",
+                wordsnotallowed: ["Blätter", "fallen", "bunt", "Bäume", "Jahreszeit"]
+            },
+            {
+                word2beguessed: "Winterstiefel",
+                wordsnotallowed: ["kalt", "Schnee", "Schuhe", "warm", "anziehen"]
+            },
+            {
+                word2beguessed: "Schneemann",
+                wordsnotallowed: ["Schnee", "bauen", "Winter", "Karotte", "kalt"]
+            },
+            {
+                word2beguessed: "Toastbrot",
+                wordsnotallowed: ["Brot", "toaster", "frühstück", "scheiben", "knusprig"]
+            },
+            {
+                word2beguessed: "Marmelade",
+                wordsnotallowed: ["süss", "Brot", "Frucht", "streichen", "Glas"]
+            },
+            {
+                word2beguessed: "Trinkflasche",
+                wordsnotallowed: ["Wasser", "mitnehmen", "schrauben", "Durst", "Sport"]
+            },
+            {
+                word2beguessed: "Apfelkuchen",
+                wordsnotallowed: ["backen", "Apfel", "süss", "Ofen", "Stück"]
+            },
+            {
+                word2beguessed: "Pfannkuchen",
+                wordsnotallowed: ["Bratpfanne", "Teig", "rund", "essen", "süss"]
+            },
+            {
+                word2beguessed: "Haarkamm",
+                wordsnotallowed: ["Haare", "ordnen", "Badezimmer", "Zinken", "kämmen"]
+            },
+            {
+                word2beguessed: "Seifenblase",
+                wordsnotallowed: ["pusten", "Luft", "rund", "platzen", "schillernd"]
+            },
+            {
+                word2beguessed: "Taschentuch",
+                wordsnotallowed: ["nase", "papier", "schnäuzen", "weich", "wegwerfen"]
+            },
+            {
+                word2beguessed: "Wäschekorb",
+                wordsnotallowed: ["Kleidung", "waschen", "sammeln", "Bad", "leer"]
+            },
+            {
+                word2beguessed: "Bettdecke",
+                wordsnotallowed: ["schlafen", "warm", "bett", "zudecken", "nacht"]
+            },
+            {
+                word2beguessed: "Fussmatte",
+                wordsnotallowed: ["Tür", "draussen", "Füsse", "putzen", "Eingang"]
+            },
+            {
+                word2beguessed: "Briefkasten",
+                wordsnotallowed: ["Post", "Briefe", "draussen", "einwerfen", "Zeitung"]
+            },
+            {
+                word2beguessed: "Klingelton",
+                wordsnotallowed: ["Handy", "Ton", "Anruf", "laut", "hören"]
+            },
+            {
+                word2beguessed: "Fernbedienung",
+                wordsnotallowed: ["TV", "drücken", "Knöpfe", "umschalten", "Gerät"]
+            },
+            {
+                word2beguessed: "Steckdose",
+                wordsnotallowed: ["Strom", "Wand", "Stecker", "Elektrizität", "Loch"]
+            },
+            {
+                word2beguessed: "Laterne",
+                wordsnotallowed: ["Licht", "tragen", "Herbst", "leuchten", "dunkel"]
+            },
+            {
+                word2beguessed: "Picknickdecke",
+                wordsnotallowed: ["draussen", "Wiese", "sitzen", "Essen", "ausbreiten"]
+            },
+            {
+                word2beguessed: "Wasserpistole",
+                wordsnotallowed: ["spritzen", "Sommer", "spielen", "nass", "Spaß"]
+            },
+            {
+                word2beguessed: "Strandmuschel",
+                wordsnotallowed: ["Strand", "Wind", "Sonne", "Zelt", "Sand"]
+            },
+            {
+                word2beguessed: "Eimer",
+                wordsnotallowed: ["tragen", "Sand", "Wasser", "Griff", "füllen"]
+            },
+            {
+                word2beguessed: "Bilderrahmen",
+                wordsnotallowed: ["Foto", "Wand", "aufhängen", "Rand", "Glas"]
+            },
+            {
+                word2beguessed: "Notizheft",
+                wordsnotallowed: ["schreiben", "Papier", "klein", "merken", "Seiten"]
+            },
+            {
+                word2beguessed: "Stundenplan",
+                wordsnotallowed: ["Schule", "Fächer", "Zeit", "Woche", "Unterricht"]
+            },
+            {
+                word2beguessed: "Turnbeutel",
+                wordsnotallowed: ["Sport", "Schule", "ziehen", "Kleidung", "Beutel"]
+            },
+            {
+                word2beguessed: "Lineal",
+                wordsnotallowed: ["messen", "gerade", "Schule", "zeichnen", "lang"]
             }
         ];
 
