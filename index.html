@@ -15,12 +15,13 @@
         body {
             font-family: 'Arial', sans-serif;
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             flex-direction: column;
             padding: 10px;
             color: #fff;
             overflow-x: hidden;
+            overflow-y: auto;
         }
 
         /* Retro Billboard Scoreboard */
@@ -226,9 +227,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            flex: 2;
             padding: 10px 0;
-            min-height: 200px;
+            overflow-y: auto;
         }
 
         .card {
@@ -339,9 +339,15 @@
 
         /* Responsive Design */
         @media (max-width: 600px) {
+            body {
+                height: 100vh;
+                overflow-y: hidden;
+            }
+
             .scoreboard {
                 padding: 8px;
                 margin-bottom: 10px;
+                flex-shrink: 0;
             }
 
             .scoreboard-title {
@@ -366,6 +372,7 @@
             .timer-section {
                 padding: 10px;
                 margin-bottom: 10px;
+                flex-shrink: 0;
             }
 
             .timer-display {
@@ -375,8 +382,8 @@
 
             .card-container {
                 padding: 5px 0;
-                flex: 2;
-                min-height: 60vh;
+                height: 66.67vh;
+                overflow-y: auto;
             }
 
             .card {
