@@ -226,17 +226,21 @@
         .card-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 10px 0;
+            align-items: stretch;
+            padding: 10px;
             overflow-y: auto;
         }
 
         .card {
             background: linear-gradient(145deg, #ffffff, #f0f0f0);
             border-radius: 20px;
-            padding: 20px;
+            padding: 30px;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
             border: 5px solid #8b4513;
             position: relative;
@@ -281,33 +285,34 @@
         }
 
         .card-word {
-            font-size: 2em;
+            font-size: 3em;
             font-weight: bold;
             color: #1e3c72;
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
+            line-height: 1.2;
         }
 
         .card-divider {
-            height: 3px;
+            height: 4px;
             background: linear-gradient(90deg, transparent, #8b4513, transparent);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .forbidden-words {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
         }
 
         .forbidden-word {
-            font-size: 1.1em;
+            font-size: 1.4em;
             color: #dc2626;
             text-align: center;
             font-weight: bold;
-            padding: 6px;
+            padding: 10px;
             background: rgba(239, 68, 68, 0.1);
             border-radius: 8px;
             border-left: 4px solid #dc2626;
@@ -381,31 +386,34 @@
             }
 
             .card-container {
-                padding: 5px 0;
+                padding: 8px;
                 height: 66.67vh;
                 overflow-y: auto;
             }
 
             .card {
-                padding: 15px;
+                padding: 20px;
+                height: 100%;
+                max-width: 100%;
             }
 
             .card-word {
-                font-size: 1.6em;
-                margin-bottom: 12px;
+                font-size: 2.5em;
+                margin-bottom: 16px;
+                letter-spacing: 2px;
             }
 
             .card-divider {
-                margin-bottom: 12px;
+                margin-bottom: 16px;
             }
 
             .forbidden-words {
-                gap: 6px;
+                gap: 10px;
             }
 
             .forbidden-word {
-                font-size: 1em;
-                padding: 5px;
+                font-size: 1.2em;
+                padding: 8px;
             }
 
             .btn {
@@ -433,16 +441,16 @@
             }
 
             .card {
-                padding: 12px;
+                padding: 16px;
             }
 
             .card-word {
-                font-size: 1.4em;
-                margin-bottom: 10px;
+                font-size: 2em;
+                margin-bottom: 12px;
             }
 
             .forbidden-word {
-                font-size: 0.9em;
+                font-size: 1.1em;
             }
         }
     </style>
