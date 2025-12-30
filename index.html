@@ -273,6 +273,11 @@
             animation: flashGreen 0.5s;
             border: 5px solid #10b981 !important;
         }
+        
+        .card.swipe-fade {
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
 
         @keyframes flashRed {
             0%, 100% { background: linear-gradient(145deg, #ffffff, #f0f0f0); }
@@ -1384,14 +1389,18 @@
             
             // Touch handlers for swipe detection
             card.addEventListener('touchstart', function(e) {
-                gameState.touchStartX = e.changedTouches[0].screenX;
-                gameState.touchStartY = e.changedTouches[0].screenY;
+                if (e.changedTouches && e.changedTouches.length > 0) {
+                    gameState.touchStartX = e.changedTouches[0].screenX;
+                    gameState.touchStartY = e.changedTouches[0].screenY;
+                }
             }, false);
             
             card.addEventListener('touchend', function(e) {
-                gameState.touchEndX = e.changedTouches[0].screenX;
-                gameState.touchEndY = e.changedTouches[0].screenY;
-                handleSwipe();
+                if (e.changedTouches && e.changedTouches.length > 0) {
+                    gameState.touchEndX = e.changedTouches[0].screenX;
+                    gameState.touchEndY = e.changedTouches[0].screenY;
+                    handleSwipe();
+                }
             }, false);
         }
         
@@ -1413,12 +1422,11 @@
                 // Card was swiped horizontally - no points, just next card
                 const card = document.getElementById('game-card');
                 
-                // Add a subtle animation (fade out)
-                card.style.transition = 'opacity 0.3s ease';
-                card.style.opacity = '0.5';
+                // Add fade animation using CSS class
+                card.classList.add('swipe-fade');
                 
                 setTimeout(() => {
-                    card.style.opacity = '1';
+                    card.classList.remove('swipe-fade');
                     nextCard();
                     gameState.isProcessingClick = false;
                 }, 300);
@@ -1428,6 +1436,7 @@
         // Single click - active team scores
         function handleSingleClick() {
             const now = Date.now();
+            // Longer cooldown to allow for double-click detection window
             const CLICK_COOLDOWN = 1200; // 1200ms cooldown
             
             // Verhindere schnelle aufeinanderfolgende Klicks
