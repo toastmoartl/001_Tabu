@@ -1156,7 +1156,11 @@
             availableCards: [],
             lastClickTime: 0,
             isProcessingClick: false,
-            askedQuestions: [] // Track questions asked in current session
+            askedQuestions: [], // Track questions asked in current session
+            touchStartX: 0,
+            touchStartY: 0,
+            touchEndX: 0,
+            touchEndY: 0
         };
 
         // LocalStorage functions
@@ -1353,67 +1357,78 @@
             
             document.getElementById('card-container').innerHTML = cardHTML;
             
-            // Add click handlers
+            // Add click and touch handlers
             const card = document.getElementById('game-card');
             
             let clickCount = 0;
             let clickTimeout = null;
             
+            // Click handler
             card.addEventListener('click', function(e) {
                 clickCount++;
                 
                 if (clickCount === 1) {
                     // Erster Klick - warte auf möglichen zweiten Klick
                     clickTimeout = setTimeout(() => {
-                        // Nur ein Klick kam - Einzelklick (rot)
+                        // Nur ein Klick kam - Einzelklick (grün - aktives Team)
                         handleSingleClick();
                         clickCount = 0;
                     }, 500); // 500ms Zeit für zweiten Klick
                 } else if (clickCount === 2) {
-                    // Zweiter Klick kam - Doppelklick (grün)
+                    // Zweiter Klick kam - Doppelklick (rot - gegnerisches Team)
                     clearTimeout(clickTimeout);
                     handleDoubleClick();
                     clickCount = 0;
                 }
             });
+            
+            // Touch handlers for swipe detection
+            card.addEventListener('touchstart', function(e) {
+                gameState.touchStartX = e.changedTouches[0].screenX;
+                gameState.touchStartY = e.changedTouches[0].screenY;
+            }, false);
+            
+            card.addEventListener('touchend', function(e) {
+                gameState.touchEndX = e.changedTouches[0].screenX;
+                gameState.touchEndY = e.changedTouches[0].screenY;
+                handleSwipe();
+            }, false);
+        }
+        
+        // Handle swipe gestures
+        function handleSwipe() {
+            const deltaX = gameState.touchEndX - gameState.touchStartX;
+            const deltaY = gameState.touchEndY - gameState.touchStartY;
+            const minSwipeDistance = 50; // Minimum distance for a swipe
+            
+            // Check if it's a horizontal swipe (deltaX > deltaY)
+            if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                // Prevent processing if already processing
+                if (gameState.isProcessingClick) {
+                    return;
+                }
+                
+                gameState.isProcessingClick = true;
+                
+                // Card was swiped horizontally - no points, just next card
+                const card = document.getElementById('game-card');
+                
+                // Add a subtle animation (fade out)
+                card.style.transition = 'opacity 0.3s ease';
+                card.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    nextCard();
+                    gameState.isProcessingClick = false;
+                }, 300);
+            }
         }
 
-        // Single click - opponent scores
+        // Single click - active team scores
         function handleSingleClick() {
             const now = Date.now();
-            const CLICK_COOLDOWN = 1200; // 600ms cooldown
-            
-            // Verhindere schnelle aufeinanderfolgende Klicks
-            if (gameState.isProcessingClick || (now - gameState.lastClickTime < CLICK_COOLDOWN)) {
-                return;
-            }
-            
-            gameState.isProcessingClick = true;
-            gameState.lastClickTime = now;
-            
-            const card = document.getElementById('game-card');
-            card.classList.add('highlight-red');
-            
-            // Award point to non-active team
-            if (gameState.activeTeam === 'wolpertingers') {
-                gameState.boarsScore++;
-                document.getElementById('score-boars').textContent = gameState.boarsScore;
-            } else {
-                gameState.wolpertingersScore++;
-                document.getElementById('score-wolpertingers').textContent = gameState.wolpertingersScore;
-            }
-            
-            setTimeout(() => {
-                card.classList.remove('highlight-red');
-                nextCard();
-                gameState.isProcessingClick = false;
-            }, 500);
-        }
-
-        // Double click - active team scores
-        function handleDoubleClick() {
-            const now = Date.now();
-            const CLICK_COOLDOWN = 600; // 600ms cooldown
+            const CLICK_COOLDOWN = 1200; // 1200ms cooldown
             
             // Verhindere schnelle aufeinanderfolgende Klicks
             if (gameState.isProcessingClick || (now - gameState.lastClickTime < CLICK_COOLDOWN)) {
@@ -1437,6 +1452,38 @@
             
             setTimeout(() => {
                 card.classList.remove('highlight-green');
+                nextCard();
+                gameState.isProcessingClick = false;
+            }, 500);
+        }
+
+        // Double click - non-active team scores
+        function handleDoubleClick() {
+            const now = Date.now();
+            const CLICK_COOLDOWN = 600; // 600ms cooldown
+            
+            // Verhindere schnelle aufeinanderfolgende Klicks
+            if (gameState.isProcessingClick || (now - gameState.lastClickTime < CLICK_COOLDOWN)) {
+                return;
+            }
+            
+            gameState.isProcessingClick = true;
+            gameState.lastClickTime = now;
+            
+            const card = document.getElementById('game-card');
+            card.classList.add('highlight-red');
+            
+            // Award point to non-active team
+            if (gameState.activeTeam === 'wolpertingers') {
+                gameState.boarsScore++;
+                document.getElementById('score-boars').textContent = gameState.boarsScore;
+            } else {
+                gameState.wolpertingersScore++;
+                document.getElementById('score-wolpertingers').textContent = gameState.wolpertingersScore;
+            }
+            
+            setTimeout(() => {
+                card.classList.remove('highlight-red');
                 nextCard();
                 gameState.isProcessingClick = false;
             }, 500);
